@@ -36,7 +36,7 @@ using Size = Pos;
 
 struct Color
 {
-  uchar short r,g,b;
+  short r,g,b;
   bool operator==(const Color& other) const 
   {
     return r == other.r && g == other.g && b == other.b;
@@ -52,9 +52,9 @@ struct Color
   }
   Color(int r, int g, int b)
   {
-    this->r = uchar(r);
-    this->g = uchar(g);
-    this->b = uchar(b);
+    this->r = r;
+    this->g = g;
+    this->b = b;
   }
   Color()
   {

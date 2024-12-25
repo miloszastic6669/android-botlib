@@ -49,7 +49,7 @@ bool c::pixel_color_similar(const cv::Mat& image, const Pos& pos, uchar r, uchar
 bool c::pixel_color_similar(const cv::Mat& image, const Pos& pos, const Color& col, double similarity)
 {
   if(similarity > 1 || similarity <= 0) return false;
-  int tolerance = static_cast<int>(UCHAR_MAX-(UCHAR_MAX * similarity));//the smaller similarity, the bigger the tolerance
+  int tolerance = static_cast<int>(UCHAR_MAX-(UCHAR_MAX * similarity) + 1);//the smaller similarity, the bigger the tolerance
   Color pixel = get_pixel(image, pos);
   return std::abs(pixel.r - col.r) <= tolerance &&
          std::abs(pixel.g - col.g) <= tolerance &&

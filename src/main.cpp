@@ -34,5 +34,5 @@ int main()
 
 void debug()
 {
-  test::get_pixel();
+  test::run_all();
 }

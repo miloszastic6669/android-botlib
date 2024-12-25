@@ -11,5 +11,7 @@ void run_all();
 
 void get_pixel();
 
+void pixel_color_similar();
+
 }
 

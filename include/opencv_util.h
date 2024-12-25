@@ -21,6 +21,16 @@ struct Pos
     return os;
   }
 
+  Pos(int x, int y)
+  {
+    this->x = x;
+    this->y = y;
+  }
+
+  Pos()
+  {
+    this->x = this->y = 0;
+  }
 };
 using Size = Pos;
 
@@ -40,6 +50,25 @@ struct Color
     os << "("<< c.r << ","<< c.g << "," << c.b << ")";
     return os;
   }
+  Color(int r, int g, int b)
+  {
+    this->r = uchar(r);
+    this->g = uchar(g);
+    this->b = uchar(b);
+  }
+  Color()
+  {
+    r = 0; 
+    g = 0;
+    b = 0;
+  }
+
+  std::string get()
+  {
+    std::string ret = "(" + std::to_string(r) + "," + std::to_string(g) + "," +std::to_string(b) + ")";
+    return ret;
+  }
+
 };
 
 namespace c

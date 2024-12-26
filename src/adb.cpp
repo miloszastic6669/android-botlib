@@ -4,6 +4,8 @@
 #include <chrono>
 #include "adb.h"
 
+
+
 //bit rate in Mbps
 int adb::scrcpy(int flags)
 {
@@ -31,9 +33,12 @@ int adb::scrcpy(int flags)
   return system(cmd.c_str());
 }
 
-int adb::scrcpy_v4l(const std::string& video_device_path)
+int adb::scrcpy_v4l(const std::string& video_device_path, bool show_window)
 {
-  std::string cmd = "scrcpy --no-window -b 16M --v4l2-sink=" + video_device_path + " &";
+  std::string cmd = "scrcpy";
+  if(!show_window)
+    cmd += " --no-window " 
+  " -b 16M --v4l2-sink=" + video_device_path + " &";
   return system(cmd.c_str());
 }
 

@@ -1,5 +1,4 @@
 #include "util.h"
-
 std::string util::get_time()
 { 
   std::time_t now = std::time(nullptr);

@@ -6,17 +6,38 @@
 #include <unistd.h>
 #include <cmath>
 
-Pos c::find(const cv::Mat &image, const cv::Mat &pattern, double similarity)
+Pos c::find_pattern(const cv::Mat &image, const cv::Mat &pattern, double similarity)
 {
-  return Pos();
+    Pos result = {-1, -1}; // Initialize to invalid position
+
+    if (image.empty() || pattern.empty() || similarity < 0.0 || similarity > 1.0) {
+        return result; // Return invalid position if inputs are invalid.
+    }
+    if (pattern.cols > image.cols || pattern.rows > image.rows){
+        return result; // Return invalid position if pattern is bigger than image
+    }
+
+    cv::Mat result_mat;
+    cv::matchTemplate(image, pattern, result_mat, cv::TM_CCOEFF_NORMED);
+
+    double maxVal;
+    cv::Point maxLoc;
+    cv::minMaxLoc(result_mat, nullptr, &maxVal, nullptr, &maxLoc);
+
+    if (maxVal >= similarity) {
+        result.x = maxLoc.x;
+        result.y = maxLoc.y;
+    }
+
+    return result;
 }
 
-bool c::find(const cv::Mat &image, const cv::Mat &pattern, Pos pos, double similarity)
+bool c::is_pattern_at(const cv::Mat &image, const cv::Mat &pattern, Pos pos, double similarity)
 {
   return false;
 }
 
-Color c::get_pixel(const cv::Mat &image, Pos pos)
+Color c::get_pixel_color(const cv::Mat &image, Pos pos)
 {
   if(pos.y < 0 || pos.y >= image.rows || pos.x < 0 || pos.x >= image.cols)
   {
@@ -31,37 +52,41 @@ Color c::get_pixel(const cv::Mat &image, Pos pos)
   return c;
 }
 
-bool c::pixel_color_same(const cv::Mat& image, const Pos& pos, uchar r, uchar g, uchar b)
+bool c::is_pixel_color_equal(const cv::Mat& image, const Pos& pos, short r, short g, short b)
 {
-  return pixel_color_same(image, pos, Color{r,g,b});
+  return is_pixel_color_same(image, pos, Color{r,g,b});
 }
 
-bool c::pixel_color_same(const cv::Mat& image, const Pos& pos, Color col)
+bool c::is_pixel_color_same(const cv::Mat& image, const Pos& pos, Color col)
 {
-  return col == get_pixel(image, pos);
+  return col == get_pixel_color(image, pos);
 }
 
-bool c::pixel_color_similar(const cv::Mat& image, const Pos& pos, uchar r, uchar g, uchar b, double similarity)
+bool c::is_pixel_color_same(const cv::Mat& image, const Pos& pos, short r, short g, short b, double similarity)
 {
-  return pixel_color_similar(image, pos, Color(r,g,b), similarity);
+  return is_pixel_color_same(image, pos, Color(r,g,b), similarity);
 }
 
-bool c::pixel_color_similar(const cv::Mat& image, const Pos& pos, const Color& col, double similarity)
+bool c::is_pixel_color_same(const cv::Mat& image, const Pos& pos, const Color& col, double similarity)
 {
   if(similarity > 1 || similarity <= 0) return false;
   int tolerance = static_cast<int>(UCHAR_MAX-(UCHAR_MAX * similarity) + 1);//the smaller similarity, the bigger the tolerance
-  Color pixel = get_pixel(image, pos);
+  Color pixel = get_pixel_color(image, pos);
   return std::abs(pixel.r - col.r) <= tolerance &&
          std::abs(pixel.g - col.g) <= tolerance &&
          std::abs(pixel.b - col.b) <= tolerance;
-
 }
 
-cv::Mat c::resize_mat(cv::Mat &src, double scale)
+void c::resize_image(cv::Mat &src, double scale)
 {
-  return cv::Mat();
+  return;
 }
 
 void c::draw_rectangle(cv::Mat &img, Pos pos, Size size, int thickness, Color col, int alpha)
 {
+  cv::Mat overlay;
+  img.copyTo(overlay);
+  cv::Scalar color(col.r, col.g, col.b);
+  cv::rectangle(overlay, cv::Rect(pos.x, pos.y, size.x, size.y), color, thickness);
+  cv::addWeighted(overlay, alpha / 255.0, img, 1 - alpha / 255.0, 0, img);
 }

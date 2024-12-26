@@ -8,6 +8,7 @@
 #include "test.h"
 
 
+
 void debug();
 
 int main()
@@ -17,6 +18,7 @@ int main()
   std::cout << "2. Start bot\n";
   std::cout << "3. Debug\n";
   std::cin >> choice;
+
 
   switch (choice)
   {
@@ -35,4 +37,10 @@ int main()
 void debug()
 {
   test::run_all();
+}
+
+void bot()
+{
+
+
 }

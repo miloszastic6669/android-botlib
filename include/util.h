@@ -8,6 +8,7 @@
 
 namespace util
 {
+//HH-MM-SS
 std::string get_time();
 
 

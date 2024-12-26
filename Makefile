@@ -4,9 +4,9 @@ CXXFLAGS = -w -std=c++20 -O2
 INCLUDE_PATH = -I./include -I/usr/local/include/opencv4
 LIBRARY_PATH = -L./lib -L/usr/local/lib
 
-LIBS = -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_videoio\
+LIBS = -llua -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_videoio\
        -ldl -lm -lpthread -lrt -lX11 -ljpeg -lpng -ltiff -lz -lwebp \
-       -ldl -lpthread
+       -ldl -lpthread 
 
 SRC = $(wildcard src/*.cpp)
 OUT = bot

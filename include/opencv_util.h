@@ -73,17 +73,18 @@ struct Color
 
 namespace c
 {
-  Pos find(const cv::Mat& image, const cv::Mat& pattern, double similarity = 1.0);
-  bool find(const cv::Mat& image, const cv::Mat& pattern, Pos pos, double similarity = 1.0);
-  Color get_pixel(const cv::Mat& image, Pos pos);
-  bool pixel_color_same(const cv::Mat& image, const Pos& pos, uchar r, uchar g, uchar b);
-  bool pixel_color_same(const cv::Mat& image, const Pos& pos, Color col);
-  bool pixel_color_similar(const cv::Mat& image, const Pos& pos, uchar r, uchar g, uchar b, double similarity);
-  bool pixel_color_similar(const cv::Mat& image, const Pos& pos, const Color& col, double similarity);
-  cv::Mat resize_mat(cv::Mat& src, double scale);
-  void draw_rectangle(cv::Mat& img, Pos pos, Size size, int thickness, Color col, int alpha);
+  //image searching/matching
+  Pos find_pattern(const cv::Mat& image, const cv::Mat& pattern, double min_similarity = 1.0);
+  bool is_pattern_at(const cv::Mat& image, const cv::Mat& pattern, Pos pos, double similarity = 1.0);
+  
+  //pixel access
+  Color get_pixel_color(const cv::Mat& image, Pos pos);
+  bool is_pixel_color_equal(const cv::Mat& image, const Pos& pos, short r, short g, short b);
+  bool is_pixel_color_same(const cv::Mat& image, const Pos& pos, Color col);
+  bool is_pixel_color_same(const cv::Mat& image, const Pos& pos, short r, short g, short b, double similarity);
+  bool is_pixel_color_same(const cv::Mat& image, const Pos& pos, const Color& col, double similarity);
 
-
-
-
+  //image manipulation
+  void resize_image(cv::Mat& src, double scale);
+  void draw_rectangle(cv::Mat& img, Pos pos, Size size, int thickness, Color col, int alpha = 255);
 }

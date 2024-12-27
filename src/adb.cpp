@@ -42,7 +42,7 @@ int adb::scrcpy_v4l(const std::string& video_device_path, bool show_window)
   return system(cmd.c_str());
 }
 
-int adb::save_screen(std::string filename)
+int adb::save_screen(const std::string& filename)
 {
   std::string cmd = "adb exec-out screencap -p > " + filename;
   return system(cmd.c_str());

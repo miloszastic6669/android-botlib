@@ -11,7 +11,6 @@ private:
   cv::VideoCapture cap = cv::VideoCapture(video_device_path.c_str());
   cv::Mat frame = cv::Mat();
 
-
 public:
   Bot();
   void retrieve_frame();

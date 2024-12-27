@@ -18,7 +18,7 @@ enum ScrcpyFlags
 int scrcpy(int flags);
 int scrcpy_v4l(const std::string& video_device_path = VDP, bool show_window = false);
 
-int save_screen(std::string);
+int save_screen(const std::string&);
 
 int click(int x, int y);
 int swipe(int x1, int y1, int x2, int y2, int duration);

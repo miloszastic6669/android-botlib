@@ -239,7 +239,7 @@ void test::pixel_color_similar()
   cv::Mat img = cv::imread("assets/test/test.png", cv::IMREAD_COLOR);
 
  auto test = [img](Color col, Pos pos){
-    if(!c::is_pixel_color_same(img, pos, col, 0.9))
+    if(!c::is_pixel_color_similar(img, pos, col, 0.9))
     {
       std::string error_msg = "Test failed at pos: (" + std::to_string(pos.x)+"," + std::to_string(pos.y) + ")";
       error_msg += "\nExpected " + col.get()+ ", but got: " + c::get_pixel_color(img,pos).get();

@@ -6,6 +6,7 @@
 #include "opencv_util.h"
 #include "bot.h"
 #include "test.h"
+#include "lua_binding.h"
 
 
 

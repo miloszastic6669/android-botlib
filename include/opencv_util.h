@@ -1,5 +1,7 @@
 #pragma once
 #include <opencv2/opencv.hpp>
+#include <vector>
+
 #include "util.h"
 #include "adb.h"
 
@@ -31,6 +33,13 @@ struct Pos
   {
     this->x = this->y = 0;
   }
+
+  std::string get()
+  {
+    std::string ret = "(" + std::to_string(x) + "," +std::to_string(y) + ")";
+    return ret;
+  }
+
 };
 using Size = Pos;
 
@@ -73,6 +82,20 @@ struct Color
 
 namespace c
 {
+
+class Mats
+{
+public:
+  Mats(const std::string& video_device_path = VDP);
+  cv::Mat* get_screen_mat_ptr();
+  cv::Mat* add_mat_from_file(const std::string& filename);
+  void update_screen_mat();
+private:
+  std::vector<cv::Mat> mats;
+  std::string video_device_path;
+  cv::VideoCapture cap;
+};
+
   //image searching/matching
   Pos find_pattern(const cv::Mat& image, const cv::Mat& pattern, double min_similarity = 1.0);
   bool is_pattern_at(const cv::Mat& image, const cv::Mat& pattern, Pos pos, double similarity = 1.0);
@@ -80,11 +103,12 @@ namespace c
   //pixel access
   Color get_pixel_color(const cv::Mat& image, Pos pos);
   bool is_pixel_color_equal(const cv::Mat& image, const Pos& pos, short r, short g, short b);
-  bool is_pixel_color_same(const cv::Mat& image, const Pos& pos, Color col);
-  bool is_pixel_color_same(const cv::Mat& image, const Pos& pos, short r, short g, short b, double similarity);
-  bool is_pixel_color_same(const cv::Mat& image, const Pos& pos, const Color& col, double similarity);
+  bool is_pixel_color_equal(const cv::Mat& image, const Pos& pos, Color col);
+  bool is_pixel_color_similar(const cv::Mat& image, const Pos& pos, short r, short g, short b, double similarity);
+  bool is_pixel_color_similar(const cv::Mat& image, const Pos& pos, const Color& col, double similarity);
 
   //image manipulation
-  void resize_image(cv::Mat& src, double scale);
+  //todo: implement
+  void resize_image(cv::Mat& src, double scale); 
   void draw_rectangle(cv::Mat& img, Pos pos, Size size, int thickness, Color col, int alpha = 255);
 }

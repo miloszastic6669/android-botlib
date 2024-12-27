@@ -40,6 +40,26 @@ struct Pos
     return ret;
   }
 
+  //needed for lua
+  int get_x() const
+  {
+    return x;
+  }
+
+  void set_x(int val)
+  {
+    x = val;
+  }
+
+  int get_y() const
+  {
+    return y;
+  }
+    void set_y(int val)
+  {
+    y = val;
+  }
+
 };
 using Size = Pos;
 
@@ -76,6 +96,37 @@ struct Color
   {
     std::string ret = "(" + std::to_string(r) + "," + std::to_string(g) + "," +std::to_string(b) + ")";
     return ret;
+  }
+
+    //needed for lua
+  short get_r() const
+  {
+    return r;
+  }
+
+  void set_r(short val)
+  {
+    r = val;
+  }
+  
+  short get_g() const
+  {
+    return g;
+  }
+
+  void set_g(short val)
+  {
+    g = val;
+  }
+  
+  short get_b() const
+  {
+    return b;
+  }
+
+  void set_b(short val)
+  {
+    b = val;
   }
 
 };

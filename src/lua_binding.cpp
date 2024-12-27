@@ -2,17 +2,22 @@
 
 Lua::Lua()
 {
-  lua.open_libraries(sol::lib::base, sol::lib::math);
-
-
+  
+  lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string);
   // pos and color structs
   sol::usertype<Pos> pos_type = lua.new_usertype<Pos>("Pos", 
-      sol::constructors<Pos(int,int), Pos()>());
-  pos_type["get"] = &Pos::get;
+      sol::constructors<Pos(int,int), Pos()>(),
+      "x",sol::property(&Pos::get_x, &Pos::set_x),
+      "y",sol::property(&Pos::get_y, &Pos::set_y),
+      sol::meta_function::to_string, &Pos::get);
 
   sol::usertype<Color> color_type = lua.new_usertype<Color>("Color",
-      sol::constructors<Color(int,int,int), Color()>());
-  color_type["get"] = &Color::get;
+      sol::constructors<Color(int,int,int), Color()>(),
+      "r", sol::property(&Color::get_r, &Color::set_r),
+      "g", sol::property(&Color::get_g, &Color::set_g),
+      "b", sol::property(&Color::get_b, &Color::set_b),
+      sol::meta_function::to_string, &Color::get);
+
   //init C Function bindings
   
   //c::Mats
@@ -58,18 +63,27 @@ Lua::Lua()
     
   };
   //pixel access
-  lua["get_pixel_color"] = [](uintptr_t image_ptr, Pos pos)
+  lua["get_pixel_color"] = [](uintptr_t image_ptr, sol::table pos_table)
   {
+    Pos pos;
+    pos.x = pos_table["x"].get<int>();
+    pos.y = pos_table["y"].get<int>();
     const cv::Mat& image = *(reinterpret_cast<cv::Mat*>(image_ptr));
+    Color col;
+    sol::table col_table;
     try
     {
-      return c::get_pixel_color(image, pos);
+      col = c::get_pixel_color(image, pos);
     }
     catch(const std::exception& e)
     {
       std::cerr << e.what() << '\n';
-      return Color(-1,-1,-1);
+      return col_table;
     }
+    col_table["r"] = col.r;
+    col_table["g"] = col.g;
+    col_table["b"] = col.b;
+    return col_table;
   };
 
   lua["is_pixel_color_equal"] = [](uintptr_t image_ptr, Pos pos, Color col)
@@ -102,7 +116,33 @@ Lua::Lua()
     
   };
 
+  lua["is_pixel_color_similar"] = [](uintptr_t image_ptr, Pos pos, Color col, double similarity)
+  {
+    const cv::Mat& image = *(reinterpret_cast<cv::Mat*>(image_ptr));
+    try
+    {
+      return c::is_pixel_color_similar(image, pos, col, similarity);
+    }
+    catch(const std::exception& e)
+    {
+      std::cerr << e.what() << '\n';
+      return false;
+    }
+  };
 
+  lua["is_pixel_color_similar_rgb"] = [](uintptr_t image_ptr, Pos pos, short r, short g, short b, double similarity)
+  {
+    const cv::Mat& image = *(reinterpret_cast<cv::Mat*>(image_ptr));
+    try
+    {
+      return c::is_pixel_color_similar(image, pos, r, g, b, similarity);
+    }
+    catch(const std::exception& e)
+    {
+      std::cerr << e.what() << '\n';
+      return false;
+    }
+  };
 
 
 }
@@ -111,14 +151,30 @@ Lua::Lua()
 bool Lua::load_script(const std::string &filename)
 { 
   script = lua.load_file(filename);
-  if(!script)
+  if(!script.valid())
   {
     sol::error err = script;
     std::string error_msg = "Failed loading in the script " + filename + ", with the following error: " + err.what() +"\n";
     throw std::runtime_error(error_msg);
     return false;
   }
-  script();
+  try
+  {
+    sol::protected_function_result result = script();
+    if(!result.valid())
+    {
+      sol::error err = result;
+      std::cerr << "Runtime error during Lua execution: " << err.what() << std::endl;
+      return false;
+    }
+    
+  }
+  catch(const sol::error& e)
+  {
+    std::cerr << "C++ Exception caught during Lua execution: " << e.what() << '\n';
+    return false;
+  }
+  
   return true;
 
 }

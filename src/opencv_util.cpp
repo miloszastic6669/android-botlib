@@ -43,7 +43,8 @@ Color c::get_pixel_color(const cv::Mat& image, Pos pos)
 {
   if(pos.y < 0 || pos.y >= image.rows || pos.x < 0 || pos.x >= image.cols)
   {
-    throw std::out_of_range("Position is out of bounds");
+    std::string error_msg = "Position is out of bounds. Pos: " + pos.get() +", and image: ("+std::to_string(image.cols) + ", "+ std::to_string(image.rows)+")";
+    throw std::out_of_range(error_msg);
   }
   CV_Assert(image.depth()==CV_8U);
   cv::Vec3b bgr = image.at<cv::Vec3b>(pos.y,pos.x);
